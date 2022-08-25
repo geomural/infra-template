@@ -81,13 +81,13 @@ const getCommits = async (prevTag) => {
         }
     };
 
-    let tagsOption = prevTag ? `${prevTag}...${TAG}` : '';
+    let tagsOption = prevTag ? `${prevTag}...${TAG}` : TAG;
+    console.log('Диапазон тегов для получения списка коммитов:', tagsOption);
     await exec.exec('git log', ['--pretty=format:"%H %an %s"', tagsOption], options);
 
-        
     let isCommitsNotFound = myError.startsWith("fatal:");
     if (isCommitsNotFound) {
-        onsole.log('Коммиты не найдены');
+        console.log('Коммиты не найдены');
         return null;
     } else {
         let commits = myOutput.replace(/"/g, '');
