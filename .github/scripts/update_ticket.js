@@ -3,19 +3,6 @@ const exec = require('@actions/exec');
 
 const { TAG, ACTOR, OAUTH_TOKEN, ORG_ID, ISSUE_ID } = process.env;
 
-// const getOptions = (output, error) => {
-//     const options = {};
-//     options.listeners = {
-//         stdout: (data) => {
-//             output += data.toString();
-//         },
-//         stderr: (data) => {
-//             error += data.toString();
-//         }
-//     };
-//     return options;
-// }
-
 const getSummary = () => {
     const currentTag = TAG.replace('rc-', '');
     const dateNow = new Date().toLocaleDateString();
@@ -38,30 +25,6 @@ const getPrevTag = async () => {
         console.log('Текущий тег является первым');
         return null;
     }
-
-    // let myOutput = '';
-    // let myError = '';
-    // // const options = getOptions(myOutput, myError);
-    // const options = {};
-    // options.listeners = {
-    //   stdout: (data) => {
-    //     myOutput += data.toString();
-    //   },
-    //   stderr: (data) => {
-    //     myError += data.toString();
-    //   }
-    // };
-
-    // await exec.exec('git describe', ['--tags'], options);
-
-    // let isPrevTagNotFound = myError.startsWith("fatal:");
-    // if (isPrevTagNotFound) {
-    //     onsole.log('Предыдущий тег не найден');
-    //     return null;
-    // } else {
-    //     console.log('Предыдущий тег: ', myOutput);
-    //     return myOutput.trim();
-    // }
 }
 
 const getCommits = async (prevTag) => {
@@ -69,7 +32,6 @@ const getCommits = async (prevTag) => {
 
     let myOutput = '';
     let myError = '';
-    // const options = getOptions(myOutput, myError);
         
     const options = {};
     options.listeners = {
@@ -87,11 +49,11 @@ const getCommits = async (prevTag) => {
 
     let isCommitsNotFound = myError.startsWith("fatal:");
     if (isCommitsNotFound) {
-        console.log('Коммиты не найдены');
+        console.log('Коммиты не найдены.');
         return null;
     } else {
         let commits = myOutput.replace(/"/g, '');
-        console.log('Получен список коммитов');
+        console.log('Cписок коммитов получен.');
         return commits;
     }
 }
@@ -104,10 +66,10 @@ const getDescription = async () => {
 
     const description = ''.concat(
         taskResponsibleInfo,
+        '\n',
         'коммиты, попавшие в релиз:\n',
         commits,
     )
-
     return description;
 }
 
@@ -125,7 +87,6 @@ const update_ticket = async () => {
     const url = `https://api.tracker.yandex.net/v2/issues/${ISSUE_ID}`;
     
     console.log('Сформированные данные для запроса', data);
-    console.log('Отправка запроса на адрес', url);
 
     const responce = await fetch(url, {
         method: "PATCH",
