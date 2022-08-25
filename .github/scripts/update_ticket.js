@@ -24,34 +24,44 @@ const getSummary = () => {
 
 const getPrevTag = async () => {
     console.log('Получаем предыдущий тег...');
-    // let arr = TAG.split('.');
-    // let curPatchVersion = arr[arr.length - 1];
-    // if (curPatchVersion > 1) {
-    //     let prevTag = `rc-0.0.${curPatchVersion - 1}`
-    // }
-    let myOutput = '';
-    let myError = '';
-    // const options = getOptions(myOutput, myError);
-    const options = {};
-    options.listeners = {
-      stdout: (data) => {
-        myOutput += data.toString();
-      },
-      stderr: (data) => {
-        myError += data.toString();
-      }
-    };
-
-    await exec.exec('git describe', ['--tags'], options);
-
-    let isPrevTagNotFound = myError.startsWith("fatal:");
-    if (isPrevTagNotFound) {
-        onsole.log('Предыдущий тег не найден');
+    let arr = TAG.split('.');
+    let curPatchVersion = arr[arr.length - 1];
+    if (curPatchVersion > 1) {
+        var prevTag = `rc-0.0.${curPatchVersion - 1}`
+    } else {
+        prevTag = null;
+    }
+    if (prevTag) {
+        onsole.log('Текущий тег является первым');
         return null;
     } else {
-        console.log('Предыдущий тег: ', myOutput);
-        return myOutput.trim();
+        console.log('Сформирован предыдущий тег: ', prevTag);
+        return prevTag;
     }
+
+    // let myOutput = '';
+    // let myError = '';
+    // // const options = getOptions(myOutput, myError);
+    // const options = {};
+    // options.listeners = {
+    //   stdout: (data) => {
+    //     myOutput += data.toString();
+    //   },
+    //   stderr: (data) => {
+    //     myError += data.toString();
+    //   }
+    // };
+
+    // await exec.exec('git describe', ['--tags'], options);
+
+    // let isPrevTagNotFound = myError.startsWith("fatal:");
+    // if (isPrevTagNotFound) {
+    //     onsole.log('Предыдущий тег не найден');
+    //     return null;
+    // } else {
+    //     console.log('Предыдущий тег: ', myOutput);
+    //     return myOutput.trim();
+    // }
 }
 
 const getCommits = async (prevTag) => {
