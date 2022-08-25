@@ -72,7 +72,7 @@ const getCommits = async (prevTag) => {
     };
 
     let tagsOption = prevTag ? `${prevTag}...${TAG}` : '';
-    await exec.exec('git log', ['--pretty=format: %h %an %s', tagsOption], options);
+    await exec.exec('git log', ['--pretty=format: "%h %an %s"', tagsOption], options);
 
         
     let isCommitsNotFound = myError.startsWith("fatal:");
@@ -107,7 +107,7 @@ const update_ticket = async () => {
 
     const headers = {
         Authorization: `OAuth ${OAUTH_TOKEN}`,
-        "X-Org-ID": `${ORG_ID}`,
+        "X-Org-ID": ORG_ID,
         "Content-Type": "application/json"
     };
 
