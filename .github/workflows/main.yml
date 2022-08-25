@@ -48,4 +48,12 @@ jobs:
           ISSUE_ID: ${{secrets.ISSUE_ID}}
         run: node .github/scripts/update_ticket.js
 
+      - name: Build docker image and add comment
+        env:
+          TAG: ${{github.ref_name}}
+          OAUTH_TOKEN: ${{secrets.OAUTH}}
+          ORG_ID: ${{secrets.ORG_ID}}
+          ISSUE_ID: ${{secrets.ISSUE_ID}}
+        run: node .github/scripts/docker_image.js
+
       
