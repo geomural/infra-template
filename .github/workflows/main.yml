@@ -35,8 +35,10 @@ jobs:
           node-version: 16.16.0
       - name: Install dependencies
         run: npm ci
-      - name: Install node-fetch
+      - name: Install node-fetch@v2
         run: npm install node-fetch@v2
+      - name: Install @actions/exec
+        run: npm install @actions/exec
       - name: Update ticket
         env:
           TAG: ${{github.ref_name}}
