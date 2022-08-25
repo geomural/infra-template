@@ -32,7 +32,7 @@ const getPrevTag = async () => {
         prevTag = null;
     }
     if (prevTag) {
-        onsole.log('Текущий тег является первым');
+        console.log('Текущий тег является первым');
         return null;
     } else {
         console.log('Сформирован предыдущий тег: ', prevTag);
@@ -134,7 +134,7 @@ const update_ticket = async () => {
     });
 
     if (!responce.ok) {
-        console.log('Ошибка при обновлении тикета:', responce.statusText);
+        throw Error(`Ошибка при обновлении тикета: ${responce.statusText}`);
     } else {
         console.log('Обновление тикета успешно завершено.');
     }
