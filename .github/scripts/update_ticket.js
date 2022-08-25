@@ -3,18 +3,18 @@ const exec = require('@actions/exec');
 
 const { TAG, ACTOR, OAUTH_TOKEN, ORG_ID, ISSUE_ID } = process.env;
 
-const getOptions = (output, error) => {
-    const options = {};
-    options.listeners = {
-        stdout: (data) => {
-            output += data.toString();
-        },
-        stderr: (data) => {
-            error += data.toString();
-        }
-    };
-    return options;
-}
+// const getOptions = (output, error) => {
+//     const options = {};
+//     options.listeners = {
+//         stdout: (data) => {
+//             output += data.toString();
+//         },
+//         stderr: (data) => {
+//             error += data.toString();
+//         }
+//     };
+//     return options;
+// }
 
 const getSummary = () => {
     const currentTag = TAG.replace('rc-', '');
@@ -22,7 +22,7 @@ const getSummary = () => {
     return `Релиз №${currentTag} от ${dateNow}`;
 }
 
-const getPrevTag = () => {
+const getPrevTag = async () => {
     console.log('Получаем предыдущий тег...');
     // let arr = TAG.split('.');
     // let curPatchVersion = arr[arr.length - 1];
@@ -31,16 +31,16 @@ const getPrevTag = () => {
     // }
     let myOutput = '';
     let myError = '';
-    const options = getOptions(myOutput, myError);
-    // const options = {};
-    // options.listeners = {
-    //   stdout: (data) => {
-    //     myOutput += data.toString();
-    //   },
-    //   stderr: (data) => {
-    //     myError += data.toString();
-    //   }
-    // };
+    // const options = getOptions(myOutput, myError);
+    const options = {};
+    options.listeners = {
+      stdout: (data) => {
+        myOutput += data.toString();
+      },
+      stderr: (data) => {
+        myError += data.toString();
+      }
+    };
 
     await exec.exec('git describe', ['--tags'], options);
 
@@ -54,22 +54,22 @@ const getPrevTag = () => {
     }
 }
 
-const getCommits = (prevTag) => {
+const getCommits = async (prevTag) => {
     console.log('Получаем список коммитов...');
 
     let myOutput = '';
     let myError = '';
-    const options = getOptions(myOutput, myError);
+    // const options = getOptions(myOutput, myError);
         
-    // const options = {};
-    // options.listeners = {
-    //     stdout: (data) => {
-    //         myOutput += data.toString();
-    //     },
-    //     stderr: (data) => {
-    //         myError += data.toString();
-    //     }
-    // };
+    const options = {};
+    options.listeners = {
+        stdout: (data) => {
+            myOutput += data.toString();
+        },
+        stderr: (data) => {
+            myError += data.toString();
+        }
+    };
 
     let tagsOption = prevTag ? `${prevTag}...${TAG}` : '';
     await exec.exec('git log', ['--pretty=format: %h %an %s', tagsOption], options);
@@ -86,11 +86,11 @@ const getCommits = (prevTag) => {
     }
 }
 
-const getDescription = () => {
+const getDescription = async () => {
     const taskResponsibleInfo = `ответственный за релиз ${ACTOR}\n`;
 
-    let prevTag = getPrevTag();
-    let commits = getCommits(prevTag);
+    let prevTag = await getPrevTag();
+    let commits = await getCommits(prevTag);
 
     const description = ''.concat(
         taskResponsibleInfo,
@@ -103,7 +103,7 @@ const getDescription = () => {
 
 const update_ticket = async () => {
     const summary = getSummary();
-    const description = getDescription();
+    const description = await getDescription();
 
     const headers = {
         Authorization: `OAuth ${OAUTH_TOKEN}`,
@@ -130,4 +130,4 @@ const update_ticket = async () => {
     }
 }
 
-update_ticket();
+update_ticket().then(r => console.log('Задача завершена.'));
