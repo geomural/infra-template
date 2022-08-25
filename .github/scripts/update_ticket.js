@@ -126,7 +126,7 @@ const update_ticket = async () => {
     if (!responce.ok) {
         console.log('Ошибка при обновлении тикета:', responce.statusText);
     } else {
-        console.log('Обновление тикета успешно завершено');
+        console.log('Обновление тикета успешно завершено.');
     }
 }
 
