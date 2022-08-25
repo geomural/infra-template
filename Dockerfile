@@ -2,7 +2,7 @@ FROM node:16-alpine
 WORKDIR /app
 
 COPY . .
-RUN npm ci --only=production
+RUN npm ci --production
 RUN npm run build
 
 RUN npm install -g serve

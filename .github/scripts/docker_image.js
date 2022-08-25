@@ -1,3 +1,4 @@
+const fetch = require("node-fetch");
 const exec = require('@actions/exec');
 
 const { TAG, OAUTH_TOKEN, ORG_ID, ISSUE_ID } = process.env;
