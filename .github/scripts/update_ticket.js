@@ -72,7 +72,7 @@ const getCommits = async (prevTag) => {
     };
 
     let tagsOption = prevTag ? `${prevTag}...${TAG}` : '';
-    await exec.exec('git log', ['--pretty=format: "%h %an %s"', tagsOption], options);
+    await exec.exec('git log', ['--pretty=format: "%h%x20%a%x20%s"', tagsOption], options);
 
         
     let isCommitsNotFound = myError.startsWith("fatal:");
