@@ -1,6 +1,6 @@
 name: CI
 
-on: push
+on: [push]
 
 jobs:
   lint:
@@ -8,16 +8,18 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Use Node.js 16.16.0
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 16.16.0
       - name: Install dependencies
-      - run: npm ci
+        run: npm ci
       - name: Check ESLint errors
-      - run: npm run lint
+        run: npm run lint
       - name: Check TS errors
-      - run: npm run ts
+        run: npm run ts
       
   release:
     if: startsWith(github.ref, 'refs/tags/rc-')
@@ -25,9 +27,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Use Node.js 16.16.0
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 16.16.0
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
+      - name: Install node-fetch
+        run: npm install node-fetch@v2
+      - name: Update ticket
+        env:
+          TAG: ${{github.ref_name}}
+          ACTOR: ${{github.actor}}
+          OAUTH_TOKEN: ${{secrets.OAUTH}}
+          ORG_ID: ${{secrets.ORG_ID}}
+          ISSUE_ID: ${{secrets.ISSUE_ID}}
+        run: node .github/scripts/update_ticket.js
+
       
