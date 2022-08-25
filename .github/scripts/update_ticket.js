@@ -32,11 +32,11 @@ const getPrevTag = async () => {
         prevTag = null;
     }
     if (prevTag) {
-        console.log('Текущий тег является первым');
-        return null;
-    } else {
         console.log('Сформирован предыдущий тег: ', prevTag);
         return prevTag;
+    } else {
+        console.log('Текущий тег является первым');
+        return null;
     }
 
     // let myOutput = '';
@@ -91,7 +91,7 @@ const getCommits = async (prevTag) => {
         return null;
     } else {
         let commits = myOutput.replace(/"/g, '');
-        console.log('Список коммитов: ', commits);
+        console.log('Получен список коммитов');
         return commits;
     }
 }
